@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#17324d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="バレーボール スコアボード">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
 <title>バレーボール スコアボード</title>
 <style>
 :root{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;color:#17212b;background:#f5f7fa}
@@ -12,9 +18,13 @@ body{margin:0;min-height:100vh}
 button,input,select{font:inherit}
 button{cursor:pointer}
 .app{max-width:760px;margin:auto;padding:14px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-h1{font-size:1.25rem;margin:0}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+h1{font-size:1.25rem;margin:0;flex:1;min-width:0;line-height:1.15}
+.title-line{display:inline}
+.title-line + .title-line::before{content:" ";}
+.top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .top button{min-width:48px;min-height:48px;border:1px solid #c8d0d8;border-radius:12px;background:white}
+.top .primary{grid-column:auto;min-height:48px;min-width:132px;padding:0 14px;border-radius:12px;font-size:1rem;background:#2563eb;color:#fff;border:0;font-weight:900;white-space:nowrap}
 .teams{display:grid;grid-template-columns:1fr 32px 1fr;gap:10px;align-items:stretch}
 .team{background:white;border:1px solid #ccd4dc;border-radius:18px;padding:12px;text-align:center}
 .team label{display:block;font-size:.85rem;color:#66717d;margin-bottom:6px}
@@ -42,14 +52,14 @@ h1{font-size:1.25rem;margin:0}
 #board{display:none}
 #board.show{display:block}
 .board-theme{border:3px solid var(--border);background:var(--bg);color:var(--text);border-radius:18px;padding:22px 18px;text-align:center}
-.board-head{font-size:1.15rem;font-weight:800;color:var(--accent);margin-bottom:12px}
+.board-head{font-size:1.35rem;font-weight:900;color:var(--accent);margin-bottom:12px}
 .board-main{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
 .board-main>div{min-width:0}
 .board-name{font-size:1.2rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .board-score{font-size:7rem;line-height:.9;font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums}
 .board-dash{font-size:2rem;font-weight:800;padding-bottom:10px}
-.board-count{margin-top:18px;font-size:1.05rem;font-weight:800}
-.board-count .num{color:var(--accent);font-size:1.2rem}
+.board-count{margin-top:18px;font-size:1.15rem;font-weight:900}
+.board-count .num{color:var(--accent);font-size:1.35rem}
 .game-set{font-size:2rem;font-weight:900;color:var(--accent);margin-bottom:10px}
 .theme-blue{--bg:#e8f1fb;--text:#12304a;--accent:#2563eb;--border:#93b4d4}
 .theme-red{--bg:#fbeaea;--text:#4a1717;--accent:#dc2626;--border:#d99a9a}
@@ -59,62 +69,184 @@ h1{font-size:1.25rem;margin:0}
  .teams{max-width:900px;margin:auto}
  .score{font-size:5.4rem;margin:8px 0}
 
- /* 配信画面は横置き時だけ、画面いっぱいに表示 */
+ /* 配信画面：横置きではブラウザのFullscreen APIを使わず、CSSだけで画面いっぱいにする */
  #board.show{
    display:flex;
    position:fixed;
    inset:0;
    width:100vw;
+   height:100vh;
    height:100dvh;
    min-height:100vh;
+   min-height:100svh;
    z-index:9999;
    margin:0;
    border:0;
    border-radius:0;
-   padding:4vh 4vw;
+   padding:0;
    overflow:hidden;
-   align-items:center;
+   align-items:stretch;
    justify-content:center;
  }
  .board-theme{
+   position:relative;
    width:100%;
    height:100%;
+   box-sizing:border-box;
    border-width:0;
    border-radius:0;
-   padding:3vh 4vw;
-   display:flex;
-   flex-direction:column;
-   justify-content:space-between;
-   align-items:stretch;
+   padding:0;
+   display:block;
+   text-align:center;
  }
- .board-head{font-size:clamp(1.35rem,3.2vh,2.2rem);margin-bottom:0}
+
+ /* SET番号：画面上部中央。ブラウザの全画面通知と重ならないよう少し下げる */
+ .board-head{
+   position:absolute;
+   top:10vh;
+   left:0;
+   right:0;
+   margin:0;
+   padding:0;
+   font-size:clamp(2rem,5.5vh,3.8rem);
+   line-height:1.1;
+   font-weight:900;
+   text-align:center;
+ }
+
+ /* 得点エリア：チーム名を上へ、得点との間隔も確保 */
  .board-main{
-   width:100%;
-   flex:1;
+   position:absolute;
+   top:17vh;
+   bottom:14vh;
+   left:1.5vw;
+   right:1.5vw;
+   width:auto;
+   height:auto;
    display:grid;
    grid-template-columns:1fr auto 1fr;
-   gap:3vw;
+   gap:1.5vw;
    align-items:center;
  }
- .board-name{font-size:clamp(1.45rem,4vh,2.5rem)}
- .board-score{font-size:clamp(6rem,20vh,12rem);line-height:.85}
- .board-dash{font-size:clamp(2.6rem,7vh,4.5rem);padding-bottom:0}
- .board-count{margin-top:0;font-size:clamp(1.2rem,3.2vh,2rem)}
- .board-count .num{font-size:clamp(1.4rem,3.8vh,2.3rem)}
- .game-set{font-size:clamp(2rem,5vh,3rem);margin-bottom:0}
+ .board-main>div{min-width:0}
+ .board-main>div:not(.board-dash){
+   display:flex;
+   flex-direction:column;
+   align-items:center;
+   justify-content:center;
+ }
+
+ /* チーム名：v9より約1.5倍を狙い、得点の一段上に配置 */
+ .board-name{
+   font-size:clamp(1.8rem,8vh,5rem);
+   line-height:1.05;
+   font-weight:900;
+   white-space:nowrap;
+   overflow:hidden;
+   text-overflow:ellipsis;
+   margin-bottom:1.8vh;
+   max-width:95%;
+ }
+
+ /* 得点：v9の巨大サイズを維持。画面高さを主基準にする */
+ .board-score{
+   font-size:min(64vh,31vw);
+   line-height:.74;
+   font-weight:900;
+   color:var(--accent);
+   font-variant-numeric:tabular-nums;
+ }
+ .board-dash{font-size:clamp(2.8rem,7vh,5rem);padding:0}
+
+ /* セットカウント：画面下端から少し上げて表示 */
+ .board-count{
+   position:absolute;
+   left:0;
+   right:0;
+   bottom:9vh;
+   margin:0;
+   padding:0;
+   font-size:clamp(2rem,5.5vh,3.8rem);
+   line-height:1.1;
+   font-weight:900;
+   text-align:center;
+ }
+ .board-count .num{font-size:clamp(2.2rem,6vh,4.2rem)}
+ .game-set{font-size:clamp(2.2rem,5.5vh,3.8rem);margin:0}
 }
+
+/* 小さなスマホの横置き用。AQUOS sense6など短い画面では、
+    チーム名と得点を少し上へ、セットカウントを十分上へ移動する */
+@media (orientation:landscape) and (max-height:500px){
+ .board-head{top:7vh;font-size:clamp(1.55rem,5.5vh,2.8rem)}
+ .board-main{top:12vh;bottom:20vh;left:1vw;right:1vw;gap:1vw}
+ .board-name{font-size:clamp(1.5rem,8vh,3.4rem);margin-bottom:1vh}
+ .board-score{font-size:min(48vh,28vw);line-height:.72}
+ .board-dash{font-size:clamp(2rem,7vh,3.5rem)}
+ .board-count{bottom:16vh;font-size:clamp(1.45rem,5vh,2.5rem)}
+ .board-count .num{font-size:clamp(1.65rem,5.5vh,2.8rem)}
+}
+
+/* V22: Androidの全画面終了通知とiPadのFullscreen API差異を避けるため、
+   配信画面はFullscreen APIを使わずCSSの固定表示だけで全画面化する。
+   PWAのstandalone起動時はホーム画面側のUIが隠れるため、この方式で十分。 */
+@media (display-mode: standalone), (display-mode: fullscreen){
+ #board.show{z-index:2147483647}
+}
+
+/* V19: 狭いスマホの横置きではタイトルを意図的に2行へ。
+   広いスマホ・タブレット・PCでは1行のまま表示する */
+@media (orientation:landscape) and (max-width:1000px){
+  h1{font-size:1.18rem;line-height:1.12}
+  .title-line{display:block;white-space:nowrap}
+  .title-line + .title-line::before{content:""}
+}
+
+/* V20: 配信ボタンを一目で分かる色に。狭いスマホでも文字を欠けさせない */
+@media (max-width:430px){
+  .top .primary{min-width:116px;padding:0 9px;background:#2563eb;color:#fff;border:0;font-weight:900}
+}
+
 @media (max-width:430px){
  .app{padding:9px}
  .score{font-size:3.8rem}
  .team{padding:9px}
+ .top{gap:6px}
+ .top-actions{gap:5px}
+ .top .primary{min-width:108px;padding:0 10px;font-size:.92rem}
+ .top button{min-width:44px;min-height:44px}
 }
+
+/* V21: 狭いスマホの縦置きでもタイトルを単語単位で2行にする。
+   「スコア」の途中で折り返さない。広いスマホ・タブレット・PCには影響しない */
+@media (orientation:portrait) and (max-width:430px){
+  h1{font-size:1.18rem;line-height:1.12}
+  .title-line{display:block;white-space:nowrap}
+  .title-line + .title-line::before{content:none}
+}
+
+/* V15: AQUOS small-height landscape, reference-image scale */
+@media (orientation:landscape) and (max-height:520px){
+  #board.show{padding:1vh 2vw}
+  #board.show .board-theme{padding:1vh 2vw}
+  #board.show .board-head{margin-top:0}
+  #board.show .board-main{top:6vh;bottom:19vh;transform:none}
+  #board.show .board-name{font-size:clamp(2rem,6vh,3.8rem);margin-bottom:.6vh}
+  #board.show .board-score{font-size:clamp(12rem,58vh,22rem);line-height:.70}
+  #board.show .board-dash{font-size:clamp(2.4rem,7vh,4.5rem)}
+  #board.show .board-count{transform:translateY(-2vh);margin-bottom:0}
+}
+
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <h1>🏐 バレーボール スコアボード</h1>
-    <button id="settingsBtn" aria-label="設定">⚙️</button>
+    <h1>🏐 <span class="title-line">バレーボール</span><span class="title-line">スコアボード</span></h1>
+    <div class="top-actions">
+        <button class="primary" id="showBoard">📺 配信！</button>
+        <button id="settingsBtn" aria-label="設定">⚙️</button>
+    </div>
   </div>
 
   <section class="teams">
@@ -146,7 +278,6 @@ h1{font-size:1.25rem;margin:0}
   <div class="actions">
     <button class="action" id="nextSet">次のセット</button>
     <button class="action" id="court">⇄ コートチェンジ</button>
-    <button class="primary" id="showBoard">📺 配信！</button>
     <button class="action" id="reset">試合リセット</button>
   </div>
 
@@ -243,7 +374,11 @@ h1{font-size:1.25rem;margin:0}
     if(a===b){ $('status').textContent='同点なのでセット取得を確定できません。'; return; }
     finishSet(a>b?'a':'b');
   }
-  function showBoard(){
+  function closeBoard(){
+    clearTimeout(timer);
+    $('board').classList.remove('show');
+  }
+  async function showBoard(){
     if(!window.matchMedia('(orientation: landscape)').matches){
       $('status').textContent='配信画面は横置き専用です。端末を横向きにしてから「配信！」を押してください。';
       return;
@@ -260,7 +395,7 @@ h1{font-size:1.25rem;margin:0}
     $('board').className='board-theme theme-'+theme;
     $('board').classList.add('show');
     clearTimeout(timer);
-    timer=setTimeout(()=>$('board').classList.remove('show'),Number($('duration').value));
+    timer=setTimeout(closeBoard,Number($('duration').value));
   }
   $('plusA').onclick=()=>point('a',1); $('minusA').onclick=()=>point('a',-1);
   $('plusB').onclick=()=>point('b',1); $('minusB').onclick=()=>point('b',-1);
@@ -268,11 +403,17 @@ h1{font-size:1.25rem;margin:0}
   $('court').onclick=()=>{courtSwapped=!courtSwapped;render();$('status').textContent='コートチェンジ。配信画面の左右を入れ替えました。';};
   $('showBoard').onclick=showBoard;
   $('settingsBtn').onclick=()=>$('settings').classList.toggle('open');
-  $('reset').onclick=()=>{a=0;b=0;setNo=1;wA=0;wB=0;courtSwapped=false;gameOver=false;render();$('board').classList.remove('show');$('status').textContent='試合をリセットしました。';};
+  $('reset').onclick=()=>{a=0;b=0;setNo=1;wA=0;wB=0;courtSwapped=false;gameOver=false;render();closeBoard();$('status').textContent='試合をリセットしました。';};
   document.querySelectorAll('input[name="swap"]').forEach(x=>x.onchange=render);
   document.querySelectorAll('input[name="mode"]').forEach(x=>x.onchange=()=>{$('status').textContent='セット取得方式を変更しました。';});
   document.querySelectorAll('[data-theme]').forEach(x=>x.onclick=()=>{theme=x.dataset.theme;$('status').textContent='配信テーマを変更しました。';});
   $('teamA').oninput=()=>{}; $('teamB').oninput=()=>{};
+  window.addEventListener('resize',()=>{
+    if($('board').classList.contains('show') && !window.matchMedia('(orientation: landscape)').matches) closeBoard();
+  });
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  }
   render();
 })();
 </script>
