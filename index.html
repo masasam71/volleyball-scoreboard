@@ -299,6 +299,12 @@ h1{font-size:1.25rem;margin:0;flex:1;min-width:0;line-height:1.15}
     $('boardNameB').textContent=displaySwap?n.a:n.b;
     $('boardA').textContent=displaySwap?b:a;
     $('boardB').textContent=displaySwap?a:b;
+   
+    $('boardNameA').style.color=displaySwap?colors[teamColorB]:colors[teamColorA];
+    $('boardA').style.color=displaySwap?colors[teamColorB]:colors[teamColorA];
+    $('boardNameB').style.color=displaySwap?colors[teamColorA]:colors[teamColorB];
+    $('boardB').style.color=displaySwap?colors[teamColorA]:colors[teamColorB];
+
     $('boardSet').textContent=setNo;
     $('boardCount').textContent=displaySwap?(wB+' - '+wA):(wA+' - '+wB);
     $('gameSet').style.display=gameOver?'block':'none';
