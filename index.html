@@ -274,12 +274,13 @@ h1{font-size:1.25rem;margin:0;flex:1;min-width:0;line-height:1.15}
   function opSwap(){ return document.querySelector('input[name="swap"]:checked').value === 'swap'; }
   function names(){ return {a:$('teamA').value.trim() || 'Aチーム', b:$('teamB').value.trim() || 'Bチーム'}; }
   function applyOperationLayout(){
-    const teams=$('.teams'), panelA=document.querySelector('.team-a'), panelB=document.querySelector('.team-b');
-    if(opSwap() && courtSwapped){
-      if(teams.firstElementChild!==panelB) teams.insertBefore(panelB,panelA);
-    }else{
-      if(teams.firstElementChild!==panelA) teams.insertBefore(panelA,panelB);
-    }
+    const panelA=document.querySelector('.team-a');
+    const panelB=document.querySelector('.team-b');
+    const dash=document.querySelector('.center-dash');
+    const swapped=opSwap() && courtSwapped;
+    panelA.style.order=swapped?'3':'1';
+    dash.style.order='2';
+    panelB.style.order=swapped?'1':'3';
   }
   function render(){
     applyOperationLayout();
