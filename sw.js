@@ -1,4 +1,4 @@
-const CACHE_NAME = 'volleyball-scoreboard-v23';
+const CACHE_NAME = 'volleyball-scoreboard-v23-1';
 
 const ASSETS = [
   './',
