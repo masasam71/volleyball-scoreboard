@@ -13,344 +13,116 @@
 <title>バレーボール スコアボード</title>
 <style>
 :root{font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;color:#17212b;background:#f5f7fa}
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh}
-button,input,select{font:inherit}
-button{cursor:pointer}
-.app{max-width:760px;margin:auto;padding:14px}
-.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-h1{font-size:1.25rem;margin:0;flex:1;min-width:0;line-height:1.15}
-.title-line{display:inline}
-.title-line + .title-line::before{content:" ";}
-.top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.top button{min-width:48px;min-height:48px;border:1px solid #c8d0d8;border-radius:12px;background:white}
-.top .primary{grid-column:auto;min-height:48px;min-width:132px;padding:0 14px;border-radius:12px;font-size:1rem;background:#2563eb;color:#fff;border:0;font-weight:900;white-space:nowrap}
-.teams{display:grid;grid-template-columns:1fr 32px 1fr;gap:10px;align-items:stretch}
-.team{background:white;border:1px solid #ccd4dc;border-radius:18px;padding:12px;text-align:center}
-.team label{display:block;font-size:.85rem;color:#66717d;margin-bottom:6px;font-weight:700}
-.team input{width:100%;padding:9px;border:1px solid #cbd3db;border-radius:9px;text-align:center;font-weight:700}
-.team-a input{color:var(--team-a,#2563eb);border-color:color-mix(in srgb,var(--team-a,#2563eb) 45%, #cbd3db)}
-.team-b input{color:var(--team-b,#dc2626);border-color:color-mix(in srgb,var(--team-b,#dc2626) 45%, #cbd3db)}
-.team-a label{color:var(--team-a,#2563eb)}
-.team-b label{color:var(--team-b,#dc2626)}
-.score{font-size:4.5rem;font-weight:800;line-height:1.05;margin:12px 0}
-.buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn{min-height:50px;border:1px solid #c8d0d8;border-radius:12px;background:#fff;font-weight:700}
-.plus{background:#17324d;color:#fff;border-color:#17324d}
-.minus{font-size:1.1rem}
-.center-dash{display:flex;align-items:center;justify-content:center;font-size:1.5rem;font-weight:800;color:#66717d}
-.info{margin-top:12px;background:white;border:1px solid #ccd4dc;border-radius:14px;padding:10px;text-align:center}
-.info strong{font-size:1.1rem}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.primary{grid-column:1/-1;min-height:54px;border:0;border-radius:14px;background:#17324d;color:white;font-size:1.1rem;font-weight:800}
-.action{min-height:48px;border:1px solid #c8d0d8;border-radius:12px;background:white;font-weight:700}
-.status{text-align:center;color:#66717d;font-size:.9rem;min-height:22px;margin:10px 0}
-.status.orientation-warning{color:#c62828;font-size:1rem;font-weight:900}
-.settings{display:none;background:white;border:1px solid #ccd4dc;border-radius:16px;padding:14px;margin-top:10px}
-.settings.open{display:block}
-.settings h2{font-size:1.05rem;margin:0 0 12px}
-.setting{margin:12px 0}
-.setting-title{font-size:.88rem;color:#66717d;margin-bottom:7px}
-.setting label{display:block;padding:7px 0}
-.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.color-choice{min-height:44px;border-radius:11px;border:2px solid #c8d0d8;background:#fff;font-weight:800}
-.color-choice.selected{border-color:#17324d;box-shadow:0 0 0 2px rgba(23,50,77,.16)}
-.color-choice[data-color="blue"]{color:#2563eb}.color-choice[data-color="red"]{color:#dc2626}.color-choice[data-color="green"]{color:#16803c}.color-choice[data-color="orange"]{color:#ea580c}
-.color-choice[data-color="purple"]{color:#7c3aed}.color-choice[data-color="pink"]{color:#db2777}.color-choice[data-color="teal"]{color:#0f766e}.color-choice[data-color="navy"]{color:#17324d}
-#board{display:none}
-#board.show{display:block}
-.board-theme{border:3px solid #b9d3ee;background:#eef6ff;color:#12304a;border-radius:18px;padding:22px 18px;text-align:center}
-.board-head{font-size:1.35rem;font-weight:900;color:#2563eb;margin-bottom:12px}
-.board-main{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
-.board-main>div{min-width:0}
-.board-name{font-size:1.2rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.board-score{font-size:7rem;line-height:.9;font-weight:900;font-variant-numeric:tabular-nums}
-.board-name-a,.board-score-a{color:var(--team-a,#2563eb)}
-.board-name-b,.board-score-b{color:var(--team-b,#dc2626)}
-.board-dash{font-size:2rem;font-weight:800;padding-bottom:10px;color:#17324d}
-.board-count{margin-top:18px;font-size:1.15rem;font-weight:900}
-.board-count .num{color:#2563eb;font-size:1.35rem}
-.game-set{font-size:2rem;font-weight:900;color:#2563eb;margin-bottom:10px}
-
-/* 本番入口画面 */
-.landing{max-width:760px;margin:auto;padding:28px 18px 40px;text-align:center}
-.landing .ball{font-size:3rem}
-.landing h1{font-size:clamp(1.8rem,5vw,2.5rem);line-height:1.25;margin:8px 0 12px}
-.landing p{font-size:1.05rem;line-height:1.8;color:#46515d;margin:8px auto;max-width:620px}
-.install-btn{display:inline-flex;align-items:center;justify-content:center;min-height:58px;padding:0 28px;margin:18px 0 12px;border:0;border-radius:15px;background:#2563eb;color:#fff;font-size:1.2rem;font-weight:900;box-shadow:0 4px 10px rgba(37,99,235,.18)}
-.landing-note{font-size:.9rem!important;color:#66717d!important}
-.install-help{display:none;margin:12px auto 0;padding:16px;border:1px solid #cbd9e8;border-radius:14px;background:#f4f9ff;text-align:left;max-width:620px}
-.install-help.show{display:block}
-.install-help strong{color:#17324d}
-.landing .enter-browser{display:inline-block;margin-top:12px;color:#2563eb;font-weight:700;text-decoration:underline;cursor:pointer}
-
-@media (orientation:landscape){
- .app{max-width:1100px;padding:10px 18px}
- .teams{max-width:900px;margin:auto}
- .score{font-size:5.4rem;margin:8px 0}
- #board.show{display:flex;position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;min-height:100vh;min-height:100svh;z-index:9999;margin:0;border:0;border-radius:0;padding:0;overflow:hidden;align-items:stretch;justify-content:center}
- .board-theme{position:relative;width:100%;height:100%;box-sizing:border-box;border-width:0;border-radius:0;padding:0;display:block;text-align:center}
- .board-head{position:absolute;top:10vh;left:0;right:0;margin:0;padding:0;font-size:clamp(2rem,5.5vh,3.8rem);line-height:1.1;font-weight:900;text-align:center}
- .board-main{position:absolute;top:17vh;bottom:14vh;left:1.5vw;right:1.5vw;width:auto;height:auto;display:grid;grid-template-columns:1fr auto 1fr;gap:1.5vw;align-items:center}
- .board-main>div{min-width:0}
- .board-main>div:not(.board-dash){display:flex;flex-direction:column;align-items:center;justify-content:center}
- .board-name{font-size:clamp(1.8rem,8vh,5rem);line-height:1.05;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:calc(1.8vh + 2px);max-width:95%}
- .board-score{font-size:min(64vh,31vw);line-height:.74;font-weight:900;font-variant-numeric:tabular-nums}
- .board-dash{font-size:clamp(2.8rem,7vh,5rem);padding:0}
- .board-count{position:absolute;left:0;right:0;bottom:9vh;margin:0;padding:0;font-size:clamp(2rem,5.5vh,3.8rem);line-height:1.1;font-weight:900;text-align:center}
- .board-count .num{font-size:clamp(2.2rem,6vh,4.2rem)}
- .game-set{font-size:clamp(2.2rem,5.5vh,3.8rem);margin:0}
-}
-
-/* 小さなスマホの横置き用。AQUOS sense6など短い画面では現状を維持 */
-@media (orientation:landscape) and (max-height:500px){
- .board-head{top:7vh;font-size:clamp(1.55rem,5.5vh,2.8rem)}
- .board-main{top:12vh;bottom:20vh;left:1vw;right:1vw;gap:1vw}
- .board-name{font-size:clamp(1.5rem,8vh,3.4rem);margin-bottom:1vh}
- .board-score{font-size:min(48vh,28vw);line-height:.72}
- .board-dash{font-size:clamp(2rem,7vh,3.5rem)}
- .board-count{bottom:16vh;font-size:clamp(1.45rem,5vh,2.5rem)}
- .board-count .num{font-size:clamp(1.65rem,5.5vh,2.8rem)}
-}
-
-/* V23: 画面幅の広いスマホだけ縦置き操作画面を少し拡大。
-   AQUOS sense6など狭いスマホ、タブレット、iPadには影響しない */
-@media (orientation:portrait) and (min-width:380px) and (max-width:600px){
- .app{padding:14px 16px}
- h1{font-size:1.35rem}
- .team{padding:14px}
- .team label{font-size:.95rem}
- .team input{font-size:1.05rem;padding:11px}
- .score{font-size:5.2rem;margin:14px 0}
- .btn{min-height:56px;font-size:1.08rem}
- .info{padding:12px;font-size:1.02rem}
- .info strong{font-size:1.2rem}
- .action{min-height:52px;font-size:1.02rem}
- .status{font-size:.95rem}
-}
-
-@media (orientation:landscape) and (max-width:1000px){
-  h1{font-size:1.18rem;line-height:1.12}
-  .title-line{display:block;white-space:nowrap}
-  .title-line + .title-line::before{content:""}
-}
-@media (max-width:430px){
- .top .primary{min-width:116px;padding:0 9px;background:#2563eb;color:#fff;border:0;font-weight:900}
-}
-@media (max-width:430px){
- .app{padding:9px}.score{font-size:3.8rem}.team{padding:9px}.top{gap:6px}.top-actions{gap:5px}.top .primary{min-width:108px;padding:0 10px;font-size:.92rem}.top button{min-width:44px;min-height:44px}
-}
-@media (orientation:portrait) and (max-width:430px){
- h1{font-size:1.18rem;line-height:1.12}.title-line{display:block;white-space:nowrap}.title-line + .title-line::before{content:none}
-}
-@media (orientation:landscape) and (max-height:520px){
- #board.show{padding:1vh 2vw}
- #board.show .board-theme{padding:1vh 2vw}
- #board.show .board-head{margin-top:0}
- #board.show .board-main{top:6vh;bottom:19vh;transform:none}
- #board.show .board-name{font-size:clamp(2rem,6vh,3.8rem);margin-bottom:.6vh}
- #board.show .board-score{font-size:clamp(12rem,58vh,22rem);line-height:.70}
- #board.show .board-dash{font-size:clamp(2.4rem,7vh,4.5rem)}
- #board.show .board-count{transform:translateY(-2vh);margin-bottom:0}
-}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#f5f7fa}body{min-height:100vh}button,input{font:inherit}button{cursor:pointer}
+.landing{max-width:760px;margin:auto;padding:28px 18px 40px;text-align:center}.landing .ball{font-size:3rem}.landing h1{font-size:clamp(1.8rem,5vw,2.5rem);line-height:1.25;margin:8px 0 12px}.landing p{font-size:1.05rem;line-height:1.8;color:#46515d;margin:8px auto;max-width:620px}.install-btn{display:inline-flex;align-items:center;justify-content:center;min-height:58px;padding:0 28px;margin:18px 0 12px;border:0;border-radius:15px;background:#2563eb;color:#fff;font-size:1.2rem;font-weight:900}.landing-note{font-size:.9rem!important;color:#66717d!important}.install-help{display:none;margin:12px auto 0;padding:16px;border:1px solid #cbd9e8;border-radius:14px;background:#f4f9ff;text-align:left;max-width:620px}.install-help.show{display:block}.landing .enter-browser{display:inline-block;margin-top:12px;color:#2563eb;font-weight:700;text-decoration:underline;cursor:pointer}
+.app{max-width:1100px;margin:auto;padding:10px 14px 28px}.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}.top h1{font-size:1.2rem;line-height:1.15;margin:0;flex:1}.top-actions{display:flex;gap:7px}.top button{min-width:44px;min-height:44px;border:1px solid #c8d0d8;border-radius:11px;background:#fff}.top .settings-button{font-size:1.2rem}
+.match-info{text-align:center;font-weight:900;color:#17324d;margin:3px 0 8px}.match-info .set-number{font-size:1.18rem}.match-info .hint{display:block;color:#66717d;font-size:.76rem;font-weight:600;margin-top:2px}
+.scoreboard{position:relative;border:3px solid #b9d3ee;background:#eef6ff;border-radius:18px;padding:12px 12px 42px}.score-grid{display:grid;grid-template-columns:minmax(0,1fr) 86px minmax(0,1fr);gap:10px;align-items:stretch}.team-card{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:#fff;border:2px solid #ccd8e4;border-radius:16px;padding:10px 8px 12px;min-height:340px}.team-card.left{grid-column:1}.team-card.right{grid-column:3}.team-name{width:100%;font-size:1.15rem;font-weight:900;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 4px 2px}.team-score{display:flex;align-items:center;justify-content:center;flex:1;width:100%;font-size:clamp(7rem,24vw,11rem);line-height:.82;font-weight:900;font-variant-numeric:tabular-nums;user-select:none;touch-action:manipulation}.tap-note{font-size:.66rem;color:#71808e;min-height:1.1em}.team-card.team-a .team-name,.team-card.team-a .team-score{color:var(--team-a,#2563eb)}.team-card.team-b .team-name,.team-card.team-b .team-score{color:var(--team-b,#dc2626)}
+.set-history{display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0;padding:5px 0}.set-history-title{font-size:.75rem;color:#66717d;font-weight:800;margin-bottom:6px}.set-row{display:grid;grid-template-columns:1fr 2px 1fr;width:100%;font-size:1.05rem;font-weight:900;line-height:1.42;font-variant-numeric:tabular-nums}.set-row span{text-align:center}.set-row .vline{background:#17324d;border-radius:2px}.set-empty{color:#9aa5af;font-size:.75rem;line-height:1.35;text-align:center}
+.reset-corner{position:absolute;right:3px;bottom:3px;min-height:32px;padding:4px 9px;border:1px solid #c8d0d8;border-radius:9px;background:#fff;color:#4e5b67;font-size:.72rem;font-weight:800}.reset-corner:active{transform:translateY(1px)}
+.set-candidate{display:none;margin-top:8px;border:2px solid #17324d;border-radius:13px;background:#fff;padding:8px;text-align:center}.set-candidate.show{display:block}.set-candidate strong{display:block;font-size:1.05rem;color:#17324d}.candidate-buttons{display:flex;justify-content:center;gap:8px;margin-top:6px}.candidate-buttons button{min-height:42px;min-width:90px;border-radius:10px;border:1px solid #c8d0d8;background:#fff;font-weight:900}.candidate-buttons .yes{background:#17324d;color:#fff;border-color:#17324d}
+.status{text-align:center;color:#66717d;font-size:.84rem;min-height:20px;margin:6px 0}.status.warning{color:#c62828;font-weight:900}.game-set{display:none;text-align:center;font-size:1.4rem;font-weight:900;color:#2563eb;margin:6px 0 0}.game-set.show{display:block}
+.settings{display:none;background:#fff;border:1px solid #ccd4dc;border-radius:16px;padding:14px;margin-top:10px;max-height:70vh;overflow:auto}.settings.open{display:block}.settings h2{font-size:1.05rem;margin:0 0 12px}.setting{margin:12px 0}.setting-title{font-size:.88rem;color:#66717d;margin-bottom:7px}.setting label{display:block;padding:7px 0}.setting input[type=text]{width:100%;padding:9px;border:1px solid #cbd3db;border-radius:9px}.court-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.court-options label{border:1px solid #cbd3db;border-radius:10px;padding:10px;text-align:center;background:#fff}.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.color-choice{min-height:44px;border-radius:11px;border:2px solid #c8d0d8;background:#fff;font-weight:800}.color-choice.selected{border-color:#17324d;box-shadow:0 0 0 2px rgba(23,50,77,.16)}.color-choice[data-color="blue"]{color:#2563eb}.color-choice[data-color="red"]{color:#dc2626}.color-choice[data-color="green"]{color:#16803c}.color-choice[data-color="orange"]{color:#ea580c}.color-choice[data-color="purple"]{color:#7c3aed}.color-choice[data-color="pink"]{color:#db2777}.color-choice[data-color="teal"]{color:#0f766e}.color-choice[data-color="navy"]{color:#17324d}.rule-note{background:#f5f7fa;border-radius:10px;padding:10px;font-size:.8rem;color:#56636f;line-height:1.55}.settings-close{width:100%;min-height:44px;margin-top:6px;border:1px solid #c8d0d8;border-radius:10px;background:#fff;font-weight:800}
+@media (max-width:600px) and (orientation:portrait){.scoreboard{padding:9px 8px 40px}.score-grid{grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr);gap:6px}.team-card{min-height:390px;padding:8px 5px 10px}.team-name{font-size:1rem}.team-score{font-size:clamp(6.2rem,28vw,9rem)}.set-row{font-size:.9rem}.reset-corner{font-size:.68rem;right:2px;bottom:2px}.tap-note{font-size:.58rem}.match-info .hint{font-size:.68rem}}
+@media (min-width:601px) and (orientation:portrait){.scoreboard{padding:14px 18px 48px}.score-grid{grid-template-columns:minmax(0,1fr) 120px minmax(0,1fr);gap:18px}.team-card{min-height:520px}.team-name{font-size:1.35rem}.team-score{font-size:clamp(10rem,22vw,16rem)}.set-row{font-size:1.35rem}.reset-corner{min-height:36px;font-size:.78rem}}
+@media (orientation:landscape){.app{max-width:1250px;padding:7px 14px 12px}.top{margin-bottom:2px}.match-info{margin:0 0 4px}.match-info .hint{display:none}.scoreboard{padding:7px 12px 32px;border-radius:15px}.score-grid{grid-template-columns:minmax(0,1fr) 105px minmax(0,1fr);gap:12px}.team-card{min-height:calc(100vh - 100px);min-height:calc(100dvh - 100px);padding:8px}.team-name{font-size:clamp(1.2rem,3.5vh,2.4rem)}.team-score{font-size:min(30vh,17vw);line-height:.78}.tap-note{font-size:.62rem}.set-row{font-size:clamp(1rem,3vh,1.55rem);line-height:1.35}.reset-corner{bottom:2px}.settings{max-height:65vh}}
+@media (orientation:landscape) and (max-height:520px){.team-card{min-height:calc(100vh - 76px);min-height:calc(100dvh - 76px)}.team-score{font-size:min(34vh,18vw)}.scoreboard{padding-bottom:30px}}
+@media (max-width:430px) and (orientation:portrait){.app{padding:7px 7px 20px}.top h1{font-size:1.05rem}.top button{min-width:42px;min-height:42px}.team-card{min-height:360px}.team-score{font-size:clamp(5.8rem,27vw,8.2rem)}}
 </style>
 </head>
 <body>
 <section id="landing" class="landing">
-  <div class="ball">🏐</div>
-  <h1>バレーボール スコアボード</h1>
+  <div class="ball">🏐</div><h1>バレーボール スコアボード</h1>
   <p>試合の得点をスマートフォン・タブレット・PCで簡単に表示できます。</p>
   <p><strong>ホーム画面にアプリとして追加すると、URL欄のないスコアボードとして使えます。</strong></p>
   <button id="installBtn" class="install-btn">📲 アプリをインストール</button>
   <div id="installHelp" class="install-help"></div>
   <p class="landing-note">インストール後は、ホーム画面の「バレーボール スコアボード」アイコンから起動してください。</p>
-  <span id="browserEnter" class="enter-browser">ブラウザで操作画面を開く</span>
+  <span id="browserEnter" class="enter-browser">ブラウザで試作版を開く</span>
 </section>
 
 <div id="appScreen" hidden>
 <div class="app">
-  <div class="top">
-    <h1>🏐 <span class="title-line">バレーボール</span><span class="title-line">スコアボード</span></h1>
-    <div class="top-actions">
-      <button class="primary" id="showBoard">📺 配信！</button>
-      <button id="settingsBtn" aria-label="設定">⚙️</button>
-    </div>
-  </div>
+  <div class="top"><h1>🏐 バレーボール スコアボード</h1><div class="top-actions"><button id="settingsBtn" class="settings-button" aria-label="設定">⚙️</button></div></div>
+  <div class="match-info"><span class="set-number" id="setNo">第1セット</span><span class="hint">得点をダブルタップで＋1、トリプルタップで－1</span></div>
 
-  <section class="teams">
-    <div class="team team-a">
-      <label for="teamA">Aチーム</label>
-      <input id="teamA" maxlength="20" value="Aチーム">
-      <div id="scoreA" class="score">0</div>
-      <div class="buttons"><button class="btn minus" id="minusA">−1</button><button class="btn plus" id="plusA">＋1</button></div>
+  <section class="scoreboard" id="scoreboard">
+    <div class="score-grid">
+      <div id="cardA" class="team-card team-a left"><div id="nameA" class="team-name">Aチーム</div><div id="scoreA" class="team-score" data-team="a">0</div><div class="tap-note">ダブルタップ ＋1 / トリプルタップ －1</div></div>
+      <div class="set-history"><div class="set-history-title">セット結果</div><div id="setHistory"></div></div>
+      <div id="cardB" class="team-card team-b right"><div id="nameB" class="team-name">Bチーム</div><div id="scoreB" class="team-score" data-team="b">0</div><div class="tap-note">ダブルタップ ＋1 / トリプルタップ －1</div></div>
     </div>
-    <div class="center-dash">−</div>
-    <div class="team team-b">
-      <label for="teamB">Bチーム</label>
-      <input id="teamB" maxlength="20" value="Bチーム">
-      <div id="scoreB" class="score">0</div>
-      <div class="buttons"><button class="btn minus" id="minusB">−1</button><button class="btn plus" id="plusB">＋1</button></div>
-    </div>
+    <button id="reset" class="reset-corner">試合リセット</button>
   </section>
 
-  <div class="info"><span id="setNo">第1セット</span>　｜　セットカウント <strong id="setCount">0 - 0</strong></div>
-  <div class="actions">
-    <button class="action" id="nextSet">次のセット</button>
-    <button class="action" id="court">⇄ コートチェンジ</button>
-    <button class="action" id="reset">試合リセット</button>
-  </div>
+  <div id="setCandidate" class="set-candidate"><strong id="candidateText">【セット終了候補】</strong><div class="candidate-buttons"><button id="candidateNo">NO</button><button id="candidateYes" class="yes">YES</button></div></div>
+  <div id="gameSet" class="game-set">GAME SET!</div>
+  <div id="status" class="status">得点をダブルタップして＋1、トリプルタップして－1。</div>
 
   <div id="settings" class="settings">
     <h2>⚙️ 設定</h2>
-    <div class="setting">
-      <div class="setting-title">セット取得の判定</div>
-      <label><input type="radio" name="mode" value="manual" checked> 「次のセット」で確定</label>
-      <label><input type="radio" name="mode" value="auto"> 25点以上・2点差で自動判定</label>
-    </div>
-    <div class="setting">
-      <div class="setting-title">コートチェンジ時の操作画面</div>
-      <label><input type="radio" name="swap" value="fixed" checked> 操作画面は入れ替えない（おすすめ）</label>
-      <label><input type="radio" name="swap" value="swap"> 操作画面も左右入れ替える</label>
-    </div>
-    <div class="setting">
-      <div class="setting-title">Aチームのカラー</div>
-      <div class="color-grid" data-team-colors="a">
-        <button class="color-choice" data-color="blue">ブルー</button><button class="color-choice" data-color="red">レッド</button><button class="color-choice" data-color="green">グリーン</button><button class="color-choice" data-color="orange">オレンジ</button>
-        <button class="color-choice" data-color="purple">パープル</button><button class="color-choice" data-color="pink">ピンク</button><button class="color-choice" data-color="teal">ティール</button><button class="color-choice" data-color="navy">ネイビー</button>
-      </div>
-    </div>
-    <div class="setting">
-      <div class="setting-title">Bチームのカラー</div>
-      <div class="color-grid" data-team-colors="b">
-        <button class="color-choice" data-color="blue">ブルー</button><button class="color-choice" data-color="red">レッド</button><button class="color-choice" data-color="green">グリーン</button><button class="color-choice" data-color="orange">オレンジ</button>
-        <button class="color-choice" data-color="purple">パープル</button><button class="color-choice" data-color="pink">ピンク</button><button class="color-choice" data-color="teal">ティール</button><button class="color-choice" data-color="navy">ネイビー</button>
-      </div>
-    </div>
-    <div class="setting">
-      <div class="setting-title">配信画面の表示時間</div>
-      <select id="duration" style="width:100%;padding:10px;border:1px solid #cbd3db;border-radius:10px"><option value="2000">2秒</option><option value="3000" selected>3秒</option><option value="5000">5秒</option></select>
-    </div>
+    <div class="setting"><div class="setting-title">チーム名</div><label>Aチーム名<input id="teamAInput" type="text" maxlength="20" value="Aチーム"></label><label>Bチーム名<input id="teamBInput" type="text" maxlength="20" value="Bチーム"></label></div>
+    <div class="setting"><div class="setting-title">コートチェンジ</div><div class="court-options"><label><input type="radio" name="courtChange" value="yes" checked> 有り</label><label><input type="radio" name="courtChange" value="no"> 無し</label></div></div>
+    <div class="setting"><div class="setting-title">Aチームのカラー</div><div class="color-grid" data-team-colors="a"><button class="color-choice" data-color="blue">ブルー</button><button class="color-choice" data-color="red">レッド</button><button class="color-choice" data-color="green">グリーン</button><button class="color-choice" data-color="orange">オレンジ</button><button class="color-choice" data-color="purple">パープル</button><button class="color-choice" data-color="pink">ピンク</button><button class="color-choice" data-color="teal">ティール</button><button class="color-choice" data-color="navy">ネイビー</button></div></div>
+    <div class="setting"><div class="setting-title">Bチームのカラー</div><div class="color-grid" data-team-colors="b"><button class="color-choice" data-color="blue">ブルー</button><button class="color-choice" data-color="red">レッド</button><button class="color-choice" data-color="green">グリーン</button><button class="color-choice" data-color="orange">オレンジ</button><button class="color-choice" data-color="purple">パープル</button><button class="color-choice" data-color="pink">ピンク</button><button class="color-choice" data-color="teal">ティール</button><button class="color-choice" data-color="navy">ネイビー</button></div></div>
+    <div class="setting"><div class="setting-title">試合ルール</div><div class="rule-note">第1～4セットは25点以上かつ2点差でセット終了候補。第5セットは15点以上かつ2点差。3セット先取でゲームセット。第5セットは8点到達時にコートチェンジします（設定が「有り」の場合）。</div></div>
+    <button id="settingsClose" class="settings-close">設定を閉じる</button>
   </div>
-
-  <div id="status" class="status">＋1を押して得点を入れてみてください。</div>
-
-  <section id="board" class="board-theme" aria-live="assertive">
-    <div id="gameSet" class="game-set" style="display:none">GAME SET!</div>
-    <div class="board-head">［ SET <span id="boardSet">1</span> ］</div>
-    <div class="board-main">
-      <div><div id="boardNameA" class="board-name board-name-a">Aチーム</div><div id="boardA" class="board-score board-score-a">0</div></div>
-      <div class="board-dash">−</div>
-      <div><div id="boardNameB" class="board-name board-name-b">Bチーム</div><div id="boardB" class="board-score board-score-b">0</div></div>
-    </div>
-    <div class="board-count">セットカウント <span id="boardCount" class="num">0 - 0</span></div>
-  </section>
-</div>
-</div>
-
+</div></div>
 <script>
-(() => {
-  const $ = id => document.getElementById(id);
-  const params = new URLSearchParams(location.search);
-  const installedStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  const appMode = params.get('app') === '1' || installedStandalone;
-  const colors = {blue:'#2563eb',red:'#dc2626',green:'#16803c',orange:'#ea580c',purple:'#7c3aed',pink:'#db2777',teal:'#0f766e',navy:'#17324d'};
-  let a=0,b=0,setNo=1,wA=0,wB=0,courtSwapped=false,gameOver=false,timer=null;
-  let teamColorA=localStorage.getItem('vb-team-color-a') || 'blue';
-  let teamColorB=localStorage.getItem('vb-team-color-b') || 'red';
-  let deferredInstallPrompt=null;
-
-  function showApp(){ $('landing').hidden=true; $('appScreen').hidden=false; }
-  function showLanding(){ $('landing').hidden=false; $('appScreen').hidden=true; }
-  if(appMode) showApp(); else showLanding();
-
-  function setColorVars(){
-    document.documentElement.style.setProperty('--team-a',colors[teamColorA]);
-    document.documentElement.style.setProperty('--team-b',colors[teamColorB]);
-    document.querySelectorAll('[data-team-colors="a"] .color-choice').forEach(x=>x.classList.toggle('selected',x.dataset.color===teamColorA));
-    document.querySelectorAll('[data-team-colors="b"] .color-choice').forEach(x=>x.classList.toggle('selected',x.dataset.color===teamColorB));
-  }
-  setColorVars();
-
-  function opSwap(){ return document.querySelector('input[name="swap"]:checked').value === 'swap'; }
-  function names(){ return {a:$('teamA').value.trim() || 'Aチーム', b:$('teamB').value.trim() || 'Bチーム'}; }
-  function applyOperationLayout(){
-    const panelA=document.querySelector('.team-a');
-    const panelB=document.querySelector('.team-b');
-    const dash=document.querySelector('.center-dash');
-    const swapped=opSwap() && courtSwapped;
-    panelA.style.order=swapped?'3':'1';
-    dash.style.order='2';
-    panelB.style.order=swapped?'1':'3';
-  }
-  function render(){
-    applyOperationLayout();
-    $('scoreA').textContent=a;
-    $('scoreB').textContent=b;
-    $('setNo').textContent='第'+setNo+'セット';
-    $('setCount').textContent=(opSwap()&&courtSwapped)?(wB+' - '+wA):(wA+' - '+wB);
-    $('plusA').disabled=$('minusA').disabled=$('plusB').disabled=$('minusB').disabled=gameOver;
-  }
-  function finishSet(winner){
-    if(gameOver)return;
-    if(winner==='a')wA++; else wB++;
-    if(wA>=3||wB>=3){gameOver=true;render();const n=names();$('status').textContent=(winner==='a'?n.a:n.b)+' が3セット先取！ゲームセットです。';return;}
-    setNo++;a=0;b=0;render();const n=names();$('status').textContent=(winner==='a'?n.a:n.b)+' がセット取得。第'+setNo+'セットへ。';
-  }
-  function autoJudge(){if(gameOver||document.querySelector('input[name="mode"]:checked').value!=='auto')return;if((a>=25||b>=25)&&Math.abs(a-b)>=2)finishSet(a>b?'a':'b');}
-  function point(team,delta){if(gameOver)return;if(team==='a')a=Math.max(0,Math.min(99,a+delta));else b=Math.max(0,Math.min(99,b+delta));render();autoJudge();}
-  function nextSet(){if(gameOver)return;if(a===b){$('status').textContent='同点なのでセット取得を確定できません。';return;}finishSet(a>b?'a':'b');}
-  function closeBoard(){clearTimeout(timer);$('board').classList.remove('show');}
-  function showBoard(){
-    if(!window.matchMedia('(orientation: landscape)').matches){$('status').textContent='配信画面は横置き専用です。端末を横向きにしてから「配信！」を押してください。';$('status').classList.add('orientation-warning');return;}
-    $('status').classList.remove('orientation-warning');
-    const n=names(),displaySwap=courtSwapped;
-    $('boardNameA').textContent=displaySwap?n.b:n.a;
-    $('boardNameB').textContent=displaySwap?n.a:n.b;
-    $('boardA').textContent=displaySwap?b:a;
-    $('boardB').textContent=displaySwap?a:b;
-    $('boardNameA').style.color=displaySwap?colors[teamColorB]:colors[teamColorA];
-    $('boardA').style.color=displaySwap?colors[teamColorB]:colors[teamColorA];
-    $('boardNameB').style.color=displaySwap?colors[teamColorA]:colors[teamColorB];
-    $('boardB').style.color=displaySwap?colors[teamColorA]:colors[teamColorB];
-    $('boardSet').textContent=setNo;
-    $('boardCount').textContent=displaySwap?(wB+' - '+wA):(wA+' - '+wB);
-    $('gameSet').style.display=gameOver?'block':'none';
-    $('board').classList.add('show');
-    clearTimeout(timer);timer=setTimeout(closeBoard,Number($('duration').value));
-  }
-
-  $('plusA').onclick=()=>point('a',1);$('minusA').onclick=()=>point('a',-1);$('plusB').onclick=()=>point('b',1);$('minusB').onclick=()=>point('b',-1);
-  $('nextSet').onclick=nextSet;
-  $('court').onclick=()=>{courtSwapped=!courtSwapped;render();$('status').textContent='コートチェンジ。配信画面の左右を入れ替えました。';$('status').classList.remove('orientation-warning');};
-  $('showBoard').onclick=showBoard;
-  $('settingsBtn').onclick=()=>$('settings').classList.toggle('open');
-  $('reset').onclick=()=>{a=0;b=0;setNo=1;wA=0;wB=0;courtSwapped=false;gameOver=false;render();closeBoard();$('status').textContent='試合をリセットしました。';$('status').classList.remove('orientation-warning');};
-  document.querySelectorAll('input[name="swap"]').forEach(x=>x.onchange=render);
-  document.querySelectorAll('input[name="mode"]').forEach(x=>x.onchange=()=>{$('status').textContent='セット取得方式を変更しました。';$('status').classList.remove('orientation-warning');});
-  document.querySelectorAll('[data-team-colors="a"] .color-choice').forEach(x=>x.onclick=()=>{teamColorA=x.dataset.color;localStorage.setItem('vb-team-color-a',teamColorA);setColorVars();});
-  document.querySelectorAll('[data-team-colors="b"] .color-choice').forEach(x=>x.onclick=()=>{teamColorB=x.dataset.color;localStorage.setItem('vb-team-color-b',teamColorB);setColorVars();});
-
-  $('teamA').oninput=()=>{};$('teamB').oninput=()=>{};
-  window.addEventListener('resize',()=>{if($('board').classList.contains('show')&&!window.matchMedia('(orientation: landscape)').matches)closeBoard();});
-
-  // 本番入口画面のインストール導線
-  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event;});
-  window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null;});
-  $('installBtn').onclick=async()=>{
-    if(deferredInstallPrompt){await deferredInstallPrompt.prompt();deferredInstallPrompt=null;return;}
-    const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
-    if(isiOS){
-      $('installHelp').innerHTML='<strong>iPad・iPhoneの場合</strong><br>① Safariの「共有」→「その他」→「ホーム画面に追加」<br>②「Webアプリとして開く」をオン<br>③「追加」をタップしてください。<br><br>ホーム画面に「バレーボール スコアボード」のアイコンができたら、そのアイコンから起動します。';
-    }else{
-      $('installHelp').innerHTML='<strong>この端末ではブラウザーのメニューからインストールしてください。</strong><br>Chromeの「︙」メニューに「アプリをインストール」または「ホーム画面に追加」が表示される場合があります。';
-    }
-    $('installHelp').classList.add('show');
-  };
-  $('browserEnter').onclick=()=>{history.replaceState({},'',location.pathname);showApp();};
-
-  if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-  render();
+(()=>{
+const $=id=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+const appMode=params.get('app')==='1'||standalone;
+const colors={blue:'#2563eb',red:'#dc2626',green:'#16803c',orange:'#ea580c',purple:'#7c3aed',pink:'#db2777',teal:'#0f766e',navy:'#17324d'};
+let a=0,b=0,setNo=1,wA=0,wB=0,courtSwapped=false,gameOver=false,setCandidate=false,set5CourtChanged=false;
+let history=[];
+let teamColorA=localStorage.getItem('vb-team-color-a')||'blue',teamColorB=localStorage.getItem('vb-team-color-b')||'red';
+let courtChange=localStorage.getItem('vb-court-change')!=='no';
+let deferredInstallPrompt=null;
+function showApp(){ $('landing').hidden=true;$('appScreen').hidden=false }
+function showLanding(){ $('landing').hidden=false;$('appScreen').hidden=true }
+if(appMode)showApp();else showLanding();
+function setColorVars(){document.documentElement.style.setProperty('--team-a',colors[teamColorA]);document.documentElement.style.setProperty('--team-b',colors[teamColorB]);document.querySelectorAll('[data-team-colors="a"] .color-choice').forEach(x=>x.classList.toggle('selected',x.dataset.color===teamColorA));document.querySelectorAll('[data-team-colors="b"] .color-choice').forEach(x=>x.classList.toggle('selected',x.dataset.color===teamColorB));document.querySelectorAll('input[name="courtChange"]').forEach(x=>x.checked=(x.value==='yes')===courtChange)}
+setColorVars();
+function names(){return {a:$('teamAInput').value.trim()||'Aチーム',b:$('teamBInput').value.trim()||'Bチーム'}}
+function displayTeams(){
+ const leftIsA=!courtSwapped;
+ $('cardA').style.order=leftIsA?'1':'3';$('cardB').style.order=leftIsA?'3':'1';
+ const n=names();$('nameA').textContent=leftIsA?n.a:n.b;$('nameB').textContent=leftIsA?n.b:n.a;
+ $('scoreA').textContent=leftIsA?a:b;$('scoreB').textContent=leftIsA?b:a;
+ $('nameA').style.color=leftIsA?colors[teamColorA]:colors[teamColorB];$('scoreA').style.color=leftIsA?colors[teamColorA]:colors[teamColorB];
+ $('nameB').style.color=leftIsA?colors[teamColorB]:colors[teamColorA];$('scoreB').style.color=leftIsA?colors[teamColorB]:colors[teamColorA];
+}
+function renderHistory(){
+ const el=$('setHistory');el.innerHTML='';
+ if(!history.length){el.innerHTML='<div class="set-empty">まだ<br>セット結果<br>なし</div>';return}
+ history.forEach(r=>{const row=document.createElement('div');row.className='set-row';const x=document.createElement('span');x.textContent=r.a;const v=document.createElement('span');v.className='vline';const y=document.createElement('span');y.textContent=r.b;row.append(x,v,y);el.append(row)})
+}
+function render(){displayTeams();$('setNo').textContent='第'+setNo+'セット';renderHistory();$('setCandidate').classList.toggle('show',setCandidate);$('gameSet').classList.toggle('show',gameOver);if(gameOver){$('status').textContent='試合終了。試合リセットで次の試合を開始できます。'} }
+function setTarget(){return setNo===5?15:25}
+function candidateWinner(){const target=setTarget();if((a>=target||b>=target)&&Math.abs(a-b)>=2)return a>b?'a':'b';return null}
+function maybeCandidate(){if(gameOver||setCandidate)return;const w=candidateWinner();if(w){setCandidate=true;const n=names();$('candidateText').textContent='【セット終了】 '+(w==='a'?n.a:n.b)+' '+(w==='a'?a:b)+'点';$('status').textContent='セット終了候補です。YESで確定、NOで得点を修正できます。';render()}}
+function maybeFifthCourtChange(){if(setNo===5&&!set5CourtChanged&&courtChange&&(a>=8||b>=8)){courtSwapped=!courtSwapped;set5CourtChanged=true;$('status').textContent='第5セット 8点到達。コートチェンジしました。';}}
+function point(team,delta){if(gameOver||setCandidate)return;if(team==='a')a=Math.max(0,a+delta);else b=Math.max(0,b+delta);maybeFifthCourtChange();render();maybeCandidate()}
+function confirmSet(){if(!setCandidate||gameOver)return;const w=candidateWinner();if(!w){setCandidate=false;render();return}history.push({a,b});if(w==='a')wA++;else wB++;setCandidate=false;if(wA>=3||wB>=3){gameOver=true;render();return}setNo++;a=0;b=0;set5CourtChanged=false;if(courtChange){courtSwapped=!courtSwapped}$('status').textContent='セットを確定しました。第'+setNo+'セットへ。';render()}
+function cancelCandidate(){setCandidate=false;$('status').textContent='得点を修正できます。';render()}
+function resetMatch(){a=0;b=0;setNo=1;wA=0;wB=0;history=[];courtSwapped=false;gameOver=false;setCandidate=false;set5CourtChanged=false;$('status').textContent='試合をリセットしました。';render()}
+function bindTap(el,team){let taps=0,timer=null;el.addEventListener('click',()=>{if(gameOver||setCandidate)return;taps++;clearTimeout(timer);timer=setTimeout(()=>{const n=taps;taps=0;if(n===2)point(team,1);else if(n>=3)point(team,-1)},340)})}
+bindTap($('scoreA'),'a');bindTap($('scoreB'),'b');
+$('candidateYes').onclick=confirmSet;$('candidateNo').onclick=cancelCandidate;$('reset').onclick=()=>{if(confirm('試合をリセットしますか？'))resetMatch()};
+$('settingsBtn').onclick=()=>$('settings').classList.toggle('open');$('settingsClose').onclick=()=>$('settings').classList.remove('open');
+$('teamAInput').oninput=render;$('teamBInput').oninput=render;
+document.querySelectorAll('input[name="courtChange"]').forEach(x=>x.onchange=()=>{courtChange=x.value==='yes';localStorage.setItem('vb-court-change',courtChange?'yes':'no');$('status').textContent='コートチェンジ設定を変更しました。';setColorVars();render()});
+document.querySelectorAll('[data-team-colors="a"] .color-choice').forEach(x=>x.onclick=()=>{teamColorA=x.dataset.color;localStorage.setItem('vb-team-color-a',teamColorA);setColorVars();render()});
+document.querySelectorAll('[data-team-colors="b"] .color-choice').forEach(x=>x.onclick=()=>{teamColorB=x.dataset.color;localStorage.setItem('vb-team-color-b',teamColorB);setColorVars();render()});
+window.addEventListener('resize',render);
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e});window.addEventListener('appinstalled',()=>{deferredInstallPrompt=null});
+$('installBtn').onclick=async()=>{if(deferredInstallPrompt){await deferredInstallPrompt.prompt();deferredInstallPrompt=null;return}const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);$('installHelp').innerHTML=isiOS?'<strong>iPad・iPhoneの場合</strong><br>① Safariの「共有」→「その他」→「ホーム画面に追加」<br>②「Webアプリとして開く」をオン<br>③「追加」をタップしてください。':'<strong>この端末ではブラウザーのメニューからインストールしてください。</strong><br>Chromeの「︙」メニューに「アプリをインストール」または「ホーム画面に追加」が表示される場合があります。';$('installHelp').classList.add('show')};
+$('browserEnter').onclick=()=>{history.replaceState({},'',location.pathname);showApp()};
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+render();
 })();
 </script>
-</body>
-</html>
+</body></html>
